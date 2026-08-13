@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Angelo IA — Explorador educativo</title>
+<style>
+:root{--bg:#07111f;--panel:#0c1b2d;--panel2:#102640;--line:#244563;--txt:#eef7ff;--muted:#91a8bf;--cyan:#67e8f9;--purple:#a78bfa;--green:#6ee7a0;--red:#ff7b8b}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#1a4164,#07111f 52%);color:var(--txt)}
+button,input,select{font:inherit}button{cursor:pointer}
+#app{min-height:100vh}.top{position:sticky;top:0;z-index:50;height:110px;background:#081523f2;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.tabs{height:43px;display:flex;align-items:end;gap:6px;padding:0 10px;overflow:hidden}.tab{height:34px;min-width:180px;max-width:260px;padding:0 10px;border:1px solid #1c3b57;border-bottom:0;border-radius:10px 10px 0 0;background:#0c1d31;display:flex;align-items:center;gap:7px}.tab.active{background:#15314b}.tab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.tab button{background:transparent;border:0;color:#9eb4c8}.newtab{height:34px;background:transparent;color:white;border:0;font-size:24px}
+.toolbar{height:67px;display:flex;align-items:center;gap:6px;padding:9px 12px}.tool{width:38px;height:38px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:19px}.tool:hover{background:#142c46}.address{height:43px;flex:1;display:flex;align-items:center;gap:8px;background:#0d2035;border:1px solid #315574;border-radius:23px;padding:0 13px}.address input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff}.address button{background:transparent;border:0;color:var(--cyan);font-size:18px}
+.view{display:none}.view.active{display:block}.home{max-width:1160px;margin:auto;padding:38px 24px 60px}.brand{text-align:center}.logo{display:inline-grid;place-items:center;width:43px;height:43px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#07111f;font-size:23px;font-weight:1000;vertical-align:middle;margin-right:8px}.brand strong{font-size:23px;letter-spacing:4px}.sub{color:var(--cyan);font-size:11px;letter-spacing:4px;margin-top:12px}
+h1{text-align:center;font-size:clamp(34px,5vw,58px);margin:12px 0 25px}.search{max-width:880px;height:64px;margin:auto;display:flex;align-items:center;gap:8px;padding:7px 8px 7px 17px;background:#0d2035;border:1px solid #376181;border-radius:17px;box-shadow:0 12px 40px #0005}.search input{flex:1;min-width:0;background:transparent;color:#fff;border:0;outline:0;font-size:16px}.search select{background:#142d47;color:white;border:1px solid #315574;border-radius:8px;padding:9px}.primary{border:0;border-radius:10px;padding:12px 17px;font-weight:900;color:#07111f;background:linear-gradient(135deg,var(--cyan),#9db8ff)}
+.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.shortcut{background:#0b1b2c;color:#fff;border:1px solid var(--line);border-radius:13px;padding:15px;text-align:left}.shortcut:hover{border-color:var(--cyan);transform:translateY(-2px)}.shortcut b{display:block;margin-top:7px}.shortcut small{color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:linear-gradient(145deg,#102640,#091726);border:1px solid var(--line);border-radius:16px;padding:19px;min-height:220px}.head{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--cyan)}.head span{float:right;color:var(--green)}.card h2{font-size:22px}.row{display:flex;gap:8px}.row input{flex:1;min-width:0;background:#071522;color:#fff;border:1px solid #315574;border-radius:9px;padding:11px;outline:0}.message{min-height:25px;color:var(--cyan);margin-top:8px}.aianswer{line-height:1.5;color:#cbd9e6;min-height:55px;margin-top:10px}
+.bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}.bottom button{background:#0b1b2c;color:white;border:1px solid var(--line);border-radius:13px;padding:16px;text-align:left}.bottom button:hover{border-color:var(--cyan)}
+.page{max-width:1160px;margin:auto;padding:30px 24px 60px}.page h2{font-size:32px}.panel{background:#0d2035;border:1px solid var(--line);border-radius:16px;padding:20px}.back{margin-bottom:15px}.resultlist{display:grid;gap:10px;margin-top:15px}.result{padding:15px;background:#0b1b2c;border:1px solid var(--line);border-radius:12px}.result h3{margin:0 0 7px;color:var(--cyan)}.result p{color:#bdcddd}.result button{border:0;background:#17344f;color:#fff;border-radius:8px;padding:8px 11px}
+.historyitem{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #1d3851}.historyitem small{color:var(--muted)}
+canvas{width:min(900px,100%);height:auto;display:block;margin:auto;border:1px solid #315574;border-radius:16px;background:#07111f}.gameinfo{text-align:center;color:var(--muted);margin-top:10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#0b1b2c;border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center}.stat b{display:block;font-size:28px;color:var(--cyan)}
+footer{text-align:center;color:#718aa3;padding:20px;font-size:12px}
+@media(max-width:800px){.shortcuts,.grid,.bottom{grid-template-columns:1fr 1fr}.search select{display:none}}@media(max-width:560px){.shortcuts,.grid,.bottom,.stats{grid-template-columns:1fr}.top{height:105px}.tab{min-width:140px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+<div class="tabs"><div class="tab active"><span>◈ Angelo IA</span><button onclick="notify('Esta es la pestaña principal.')">×</button></div><button class="newtab" onclick="openNewTab()">+</button></div>
+<div class="toolbar">
+<button class="tool" onclick="history.back()" title="Atrás">←</button>
+<button class="tool" onclick="history.forward()" title="Adelante">→</button>
+<button class="tool" onclick="location.reload()" title="Recargar">↻</button>
+<button class="tool" onclick="show('home')" title="Inicio">⌂</button>
+<form class="address" id="addressForm"><span>🔒</span><input id="address" placeholder="Escribe una dirección o búsqueda..." autocomplete="off"><button>↵</button></form>
+<button class="tool" onclick="show('assistant')" title="IA">🤖</button>
+<button class="tool" onclick="show('game');startGame()" title="Juego">🎮</button>
+<button class="tool" onclick="toggleTheme()" title="Tema">☼</button>
+</div></header>
+
+<section id="home" class="view active">
+<div class="home">
+<div class="brand"><span class="logo">◈</span><strong>ANGELO IA</strong><div class="sub">EXPLORA · APRENDE · JUEGA</div></div>
+<h1>¿Qué quieres descubrir hoy?</h1>
+<form class="search" id="searchForm"><span>⌕</span><input id="query" placeholder="Busca cualquier cosa en Internet..." autocomplete="off"><select id="engine"><option value="google">Google</option><option value="bing">Bing</option><option value="duck">DuckDuckGo</option><option value="wiki">Wikipedia</option></select><button class="primary">BUSCAR</button></form>
+
+<div class="shortcuts">
+<button class="shortcut" onclick="quickSearch('matemática')">🧮<b>MATEMÁTICA</b><small>Buscar conceptos y problemas</small></button>
+<button class="shortcut" onclick="quickSearch('ciencia')">🔬<b>CIENCIA</b><small>Explorar ciencia</small></button>
+<button class="shortcut" onclick="quickSearch('historia del Perú')">🌎<b>HISTORIA</b><small>Consultar fuentes</small></button>
+<button class="shortcut" onclick="quickSearch('tecnología')">💻<b>TECNOLOGÍA</b><small>Investigar innovación</small></button>
+</div>
+
+<div class="grid">
+<div class="card"><div class="head">🧠 RETO DEL DÍA <span>+50 XP</span></div><h2 id="question">¿Cuánto es 17 × 8?</h2><div class="row"><input id="answer" type="number" placeholder="Respuesta"><button class="primary" onclick="checkAnswer()">COMPROBAR</button></div><div class="message" id="result"></div></div>
+<div class="card"><div class="head">🔎 BÚSQUEDA DESTACADA</div><h2>Descubre algo nuevo</h2><p>Este botón genera una búsqueda diferente cada vez.</p><button class="primary" onclick="discover()">🚀 DESCUBRIR</button><div class="message" id="discoverMsg"></div></div>
+<div class="card"><div class="head">🤖 IA PERSONAL</div><h2>Pregunta algo</h2><div class="row"><input id="aiInput" placeholder="¿Qué es una parábola?"><button class="primary" onclick="askAI('aiInput','aiOut')">ENVIAR</button></div><div class="aianswer" id="aiOut">La respuesta aparecerá aquí.</div></div>
+<div class="card"><div class="head">⭐ TU PROGRESO <span id="xp">0 XP</span></div><h2>Perfil de explorador</h2><p id="stats">Todavía no has conseguido XP.</p><button class="primary" onclick="show('stats')">📊 VER ESTADÍSTICAS</button></div>
+</div>
+
+<div class="bottom">
+<button onclick="show('assistant')">🤖 <strong>ASISTENTE</strong><br><small>Centro de ayuda y estudio</small></button>
+<button onclick="show('game');startGame()">🎮 <strong>MINI RUN</strong><br><small>Jugar y superar récord</small></button>
+<button onclick="show('history')">🕘 <strong>HISTORIAL</strong><br><small>Ver búsquedas guardadas</small></button>
+<button onclick="show('tools')">🧰 <strong>HERRAMIENTAS</strong><br><small>Calculadora y utilidades</small></button>
+</div>
+</div>
+</section>
+
+<section id="assistant" class="view page"><button class="primary back" onclick="show('home')">← Inicio</button><h2>🤖 Asistente educativo</h2><div class="panel"><p>Este asistente es local: no necesita una API ni envía tus preguntas. Puede reconocer algunos temas y ayudarte a formular búsquedas.</p><div class="row"><input id="assistantInput" placeholder="Pregunta algo..."><button class="primary" onclick="askAI('assistantInput','assistantOut')">PREGUNTAR</button></div><div class="aianswer" id="assistantOut"></div><hr style="border-color:#244563"><button class="primary" onclick="quickSearch('fuentes académicas sobre inteligencia artificial')">📚 Buscar fuentes académicas</button></div></section>
+
+<section id="game" class="view page"><button class="primary back" onclick="show('home')">← Inicio</button><h2>🎮 Mini Run</h2><div class="panel"><canvas id="canvas" width="900" height="395"></canvas><div class="gameinfo">ESPACIO / ↑ / clic = saltar · <span id="gameScore">0</span> puntos · récord: <span id="record">0</span></div><button class="primary" style="margin-top:12px" onclick="startGame()">🔄 REINICIAR</button></div></section>
+
+<section id="history" class="view page"><button class="primary back" onclick="show('home')">← Inicio</button><h2>🕘 Historial de búsquedas</h2><div class="panel"><div id="historyList"></div><button class="primary" onclick="clearHistory()">🗑 BORRAR HISTORIAL</button></div></section>
+
+<section id="tools" class="view page"><button class="primary back" onclick="show('home')">← Inicio</button><h2>🧰 Herramientas</h2><div class="panel"><h3>🧮 Calculadora</h3><div class="row"><input id="calcInput" placeholder="Ej.: (15*4)+8/2"><button class="primary" onclick="calculate()">CALCULAR</button></div><div class="message" id="calcOut"></div><h3>🔗 Abrir sitio</h3><div class="row"><input id="siteInput" placeholder="Ej.: wikipedia.org"><button class="primary" onclick="openSite()">ABRIR</button></div><h3>📋 Portapapeles</h3><button class="primary" onclick="copyText('Angelo IA — explora, aprende y juega.')">COPIAR TEXTO DE PRUEBA</button></div></section>
+
+<section id="stats" class="view page"><button class="primary back" onclick="show('home')">← Inicio</button><h2>📊 Estadísticas</h2><div class="stats"><div class="stat"><b id="statXP">0</b>XP</div><div class="stat"><b id="statSearch">0</b>Búsquedas</div><div class="stat"><b id="statGames">0</b>Partidas</div></div><div class="panel" style="margin-top:12px"><p>Tu progreso se guarda localmente en este navegador.</p><button class="primary" onclick="resetData()">♻ REINICIAR PROGRESO</button></div></section>
+
+<div id="toast" style="position:fixed;right:18px;bottom:18px;z-index:100;background:#102640;border:1px solid #315574;color:white;padding:12px 16px;border-radius:10px;display:none"></div>
+<footer>Angelo IA · un solo archivo HTML · diseñado para Mozilla Firefox</footer>
+</div>
+
+<script>
+const HKEY='ob_history',XKEY='ob_xp',GKEY='ob_games',RKEY='ob_record';
+let xp=Number(localStorage.getItem(XKEY)||0),games=Number(localStorage.getItem(GKEY)||0),record=Number(localStorage.getItem(RKEY)||0),challenge=0;
+const challenges=[['¿Cuánto es 17 × 8?',136],['¿Cuántos lados tiene un hexágono?',6],['¿Cuál es √144?',12],['¿Cuánto es 3³?',27],['¿Cuál es 15²?',225],['Si x + 7 = 19, ¿cuánto vale x?',12]];
+const $=id=>document.getElementById(id);
+
+function show(id){
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+ $(id).classList.add('active');
+ if(id==='history')renderHistory();
+ if(id==='stats')renderStats();
+ window.scrollTo(0,0);
+}
+function notify(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._toast);window._toast=setTimeout(()=>t.style.display='none',2200)}
+function quickSearch(q){$('query').value=q;search(q)}
+function search(q,engine=$('engine').value){
+ q=String(q||'').trim();if(!q){notify('Escribe algo para buscar.');$('query').focus();return}
+ saveHistory(q,engine);
+ const urls={google:'https://www.google.com/search?q=',bing:'https://www.bing.com/search?q=',duck:'https://duckduckgo.com/?q=',wiki:'https://es.wikipedia.org/wiki/Especial:Buscar?search='};
+ window.open(urls[engine]+encodeURIComponent(q),'_blank','noopener');
+ notify('Resultados abiertos en una nueva pestaña.');
+}
+function navigate(v){
+ v=v.trim();if(!v){notify('Escribe una dirección o búsqueda.');return}
+ if(/^https?:\/\//i.test(v))window.open(v,'_blank','noopener');
+ else if(/^[\w-]+(\.[\w-]+)+/.test(v)&&!v.includes(' '))window.open('https://'+v,'_blank','noopener');
+ else search(v);
+}
+function saveHistory(q,engine){
+ let h=JSON.parse(localStorage.getItem(HKEY)||'[]');h.unshift({q,engine,date:new Date().toLocaleString('es-PE')});localStorage.setItem(HKEY,JSON.stringify(h.slice(0,30)));renderStats();
+}
+function renderHistory(){
+ const h=JSON.parse(localStorage.getItem(HKEY)||'[]'),box=$('historyList');
+ if(!h.length){box.innerHTML='<p>No hay búsquedas todavía.</p>';return}
+ box.innerHTML=h.map((x,i)=>`<div class="historyitem"><span>🔎 ${esc(x.q)}<br><small>${esc(x.date)} · ${esc(x.engine)}</small></span><button class="primary" style="padding:8px 11px" data-i="${i}">Buscar</button></div>`).join('');
+ box.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const x=h[Number(b.dataset.i)];search(x.q,x.engine)});
+}
+function clearHistory(){localStorage.removeItem(HKEY);renderHistory();renderStats();notify('Historial borrado.')}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function checkAnswer(){
+ const r=$('result'),a=Number($('answer').value);
+ if(a===challenges[challenge][1]){xp+=50;localStorage.setItem(XKEY,xp);updateXP();r.textContent='✓ Correcto: +50 XP';challenge=(challenge+1)%challenges.length;setTimeout(()=>{$('question').textContent=challenges[challenge][0];$('answer').value='';r.textContent=''},800)}
+ else r.textContent='✗ Incorrecto. Inténtalo de nuevo.';
+}
+function updateXP(){$('xp').textContent=xp+' XP';$('stats').textContent=`Tienes ${xp} XP. Sigue resolviendo retos.`}
+function discover(){
+ const topics=['agujeros negros curiosidades','historia de Machu Picchu','cómo funciona un satélite','paradojas matemáticas','bioluminiscencia','origen de Internet','diagramas de Voronoi','energía solar'];
+ const q=topics[Math.floor(Math.random()*topics.length)];$('discoverMsg').textContent='Tema: '+q;search(q)}
+function askAI(input,out){
+ const q=$(input).value.trim(),o=$(out);if(!q){o.textContent='Escribe una pregunta.';return}
+ const l=q.toLowerCase();let a='No tengo un modelo generativo conectado en este archivo, pero puedo ayudarte a buscar información confiable. Prueba con una búsqueda específica.';
+ if(l.includes('parábola')||l.includes('parabola'))a='Una parábola es una curva cuyos puntos están a igual distancia de un foco y una directriz. En álgebra aparece como la gráfica de una función cuadrática.';
+ else if(l.includes('fotosíntesis'))a='La fotosíntesis transforma energía luminosa en energía química. Las plantas utilizan dióxido de carbono y agua y producen materia orgánica y oxígeno.';
+ else if(l.includes('ecuación'))a='Una ecuación es una igualdad con una o más incógnitas. Resolverla consiste en determinar los valores que hacen verdadera la igualdad.';
+ else if(l.includes('ib')||l.includes('investigación'))a='Para una investigación escolar, formula una pregunta concreta, define variables, usa fuentes confiables, analiza evidencia y termina con una conclusión que responda la pregunta.';
+ else if(l.includes('matemática')||l.includes('matematica'))a='Puedo ayudarte a organizar el problema matemático. Identifica los datos, lo que se pide, una estrategia y comprueba el resultado.';
+ o.textContent=a;
+}
+function calculate(){
+ const s=$('calcInput').value.trim(),out=$('calcOut');
+ if(!s){out.textContent='Escribe una operación.';return}
+ if(!/^[0-9+\-*/().%\s]+$/.test(s)){out.textContent='Solo se permiten números y operaciones básicas.';return}
+ try{const result=Function('"use strict";return ('+s+')')();out.textContent='Resultado: '+result}catch{out.textContent='Operación no válida.'}
+}
+function openSite(){let s=$('siteInput').value.trim();if(!s)return;if(!/^https?:\/\//i.test(s))s='https://'+s;window.open(s,'_blank','noopener')}
+async function copyText(t){try{await navigator.clipboard.writeText(t);notify('Texto copiado.')}catch{notify('El navegador no permitió copiar automáticamente.')}}
+function renderStats(){
+ const h=JSON.parse(localStorage.getItem(HKEY)||'[]');$('statXP').textContent=xp;$('statSearch').textContent=h.length;$('statGames').textContent=games;$('record').textContent=record;
+}
+function resetData(){if(confirm('¿Reiniciar XP, historial y récord?')){localStorage.removeItem(HKEY);localStorage.removeItem(XKEY);localStorage.removeItem(GKEY);localStorage.removeItem(RKEY);location.reload()}}
+function toggleTheme(){document.body.classList.toggle('light');if(document.body.classList.contains('light')){document.body.style.filter='invert(.91) hue-rotate(180deg)';notify('Modo claro activado')}else{document.body.style.filter='';notify('Modo oscuro activado')}}
+function openNewTab(){window.open(location.href,'_blank','noopener')}
+
+$('searchForm').onsubmit=e=>{e.preventDefault();search($('query').value,$('engine').value)}
+$('addressForm').onsubmit=e=>{e.preventDefault();navigate($('address').value)}
+document.addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('query').focus();$('query').select()}
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='l'){e.preventDefault();$('address').focus();$('address').select()}
+});
+updateXP();renderStats();
+
+/* MINI RUN */
+const canvas=$('canvas'),ctx=canvas.getContext('2d');let raf,playing=false,p,lastT,obs,score;
+function startGame(){
+ cancelAnimationFrame(raf);games++;localStorage.setItem(GKEY,games);renderStats();p={x:90,y:300,w:34,h:45,vy:0,on:true};obs=[];score=0;playing=true;lastT=performance.now();raf=requestAnimationFrame(gameLoop);
+}
+function jump(){if(playing&&p.on){p.vy=-13;p.on=false}}
+canvas.addEventListener('pointerdown',jump);
+document.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='ArrowUp')&&$('game').classList.contains('active')){e.preventDefault();jump()}});
+function gameLoop(t){
+ if(!playing)return;lastT=t;ctx.clearRect(0,0,900,395);ctx.fillStyle='#0b1b2c';ctx.fillRect(0,0,900,395);
+ ctx.strokeStyle='#315574';ctx.beginPath();ctx.moveTo(0,347);ctx.lineTo(900,347);ctx.stroke();
+ p.vy+=.72;p.y+=p.vy;if(p.y+p.h>=347){p.y=347-p.h;p.vy=0;p.on=true}
+ if(Math.random()<.018)obs.push({x:900,y:317,w:28,h:30});obs.forEach(o=>o.x-=7);obs=obs.filter(o=>o.x>-60);
+ ctx.fillStyle='#67e8f9';ctx.fillRect(p.x,p.y,p.w,p.h);
+ for(const o of obs){ctx.fillStyle='#ff7b8b';ctx.fillRect(o.x,o.y,o.w,o.h);if(p.x<o.x+o.w&&p.x+p.w>o.x&&p.y<o.y+o.h&&p.y+p.h>o.y){endGame();return}}
+ score++;$('gameScore').textContent=score;raf=requestAnimationFrame(gameLoop);
+}
+function endGame(){playing=false;cancelAnimationFrame(raf);if(score>record){record=score;localStorage.setItem(RKEY,record);notify('¡Nuevo récord: '+record+'!')}renderStats();ctx.fillStyle='#07111fee';ctx.fillRect(0,0,900,395);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 42px Segoe UI';ctx.fillText('GAME OVER',450,170);ctx.font='22px Segoe UI';ctx.fillText('Puntuación: '+score,450,215);ctx.fillText('Pulsa REINICIAR para jugar otra vez',450,255);ctx.textAlign='left'}
+</script>
+</body>
+</html>
